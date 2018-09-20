@@ -1,7 +1,8 @@
 {
   "name": "askbei",
   "version": "1.0.0",
-  "description": "",
+  "description": "Askbei",
+  "repository": "git://github.com/ProCxxx/askbei",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
