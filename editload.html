@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Askbei Dispatch - Edit Load</title>
+    <link rel="stylesheet" href="./css/editload.css">
+    <link rel="stylesheet" href="./css/common.css">
+
+    <style>
+        .main{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .main *{
+            width: 400px;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="nav">
+        <a href="./index.html" class="item">Back</a>
+        <h1 class="title">Edit Load</h1>
+    </div>
+        <form class="main">
+             <select>
+            <option value="1">Load 1</option>
+            <option value="2">Load 2</option>
+            <option value="3">Load 3</option>
+            <option value="4">Load 4</option>
+            <option value="5">Load 2</option>
+        </select>
+        <br/>
+            <label for="customer">Customer:</label>
+        <select id='customer'>
+            <option value=1>Customer 1</option>
+            <option value=2>Customer 2</option>
+            <option value=3>Customer 3</option>
+            <option value=4>Customer 4</option>
+        </select>
+        <label for="pickupdate">Pick up date: </label>
+        <input type="date" id="pickupdate"/>
+        <input type="text" placeholder="Pick up location" id="pickuplocation">
+        <label for="deliverydate">Delivery date: </label>
+        <input type="date" id='deliverydate'/>
+        <input type="text" placeholder="Delivery location" id="deliverylocation"/>
+        <input type="text" placeholder="Gross Rate" id="grossrate"/> 
+        <input type="text" placeholder="Deliver Rate" id="deliveryrate"/> 
+        <input type="text" placeholder="Upload BOL when completed" id='BOL'/>
+        <label for="drivers">Assign to driver: </label>
+        <select id='drivers'>
+            <option value=1>Driver 1</option>
+            <option value=2>Driver 2</option>
+            <option value=3>Driver 3</option>
+            <option value=4>Driver 4</option>
+        </select>
+        <input type="submit" value="Save">
+</form>
+    <script>
+        document.querySelectorAll("input[type=date]").forEach(item=>item.valueAsDate= new Date());
+        document.querySelector('form').addEventListener('submit',handleSubmit);
+        function handleSubmit(e){
+            e.preventDefault();
+            var els = document.querySelectorAll("form *:not(label):not(option)");
+            var vals=[];
+            els.forEach((item)=>{vals.push(item.value)});
+            console.log(vals=vals.slice(0,-1));
+        }
+    </script>
+    <script>
+        require('./renderer.js')
+    </script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Askbei Dispatch - Drivers Payments</title>
+    <link rel="stylesheet" href="./css/drivers2.css">
+    <link rel="stylesheet" href="./css/common.css">
+
+    <style>
+        .main{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .main *{
+            width: 400px;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="nav">
+        <a href="./index.html" class="item">Back</a>
+        <h1 class="title">Drivers Payments</h1>
+    </div>
+    <form class="main">
+        <select>
+            <option value="1">Driver 1</option>
+            <option value="2">Driver 2</option>
+            <option value="3">Driver 3</option>
+            <option value="4">Driver 4</option>
+            <option value="5">Driver 2</option>
+        </select>
+        <br/>
+        <input type="button" value="Load List for the Week" id='llforweek'/>
+        <input type="text" placeholder="Fuel Expenses" id='fuelexp'/>
+        <input type="text" placeholder="Misc. Expenses" id='miscexp'/>
+        <input type="button" value="Generate Payslip" id='genpayslip'/>
+        <input type="submit" value="Save">
+    </form>
+    <script>
+    </script>
+</body>
+
+</html>

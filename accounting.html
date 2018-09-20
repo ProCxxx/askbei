@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Askbei Dispatch - Accounting</title>
+    <link rel="stylesheet" href="./css/accounting.css">
+    <link rel="stylesheet" href="./css/common.css">
+
+    <style>
+        .main{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin: 20px 0;
+            }
+            .main *{
+                width: 400px;
+                padding: 10px;
+            }
+    </style>
+  </head>
+  <body>
+    <div class="nav">
+      <a href="index.html" class="item">Back</a>
+      <h1 class="title">Accounting</h1>
+    </div>
+    <form class="main">
+        <select>
+            <option value="1">Driver 1</option>
+            <option value="2">Driver 2</option>
+            <option value="3">Driver 3</option>
+            <option value="4">Driver 4</option>
+            <option value="5">Driver 2</option>
+        </select>
+        <br/>
+        <input type="button" value="Convert load to inovice" id='cl2i'/>
+        <label for="dss">Date Send/Submited</label>
+        <input type="date" placeholder="Date Send/Submited" id='dss'/>
+        <label for="dp">Date Payment</label>
+        <input type="date" placeholder="Date Payment" id='dp'/>
+        <label for="ytd">Year to Date Information</label>
+        <input type="date" placeholder="Year to Date Information" id='ytd'/>
+        <br>
+        <input type="submit" value="Save">
+    </form>
+    <script>
+        document.querySelectorAll("input[type=date]").forEach(item=>item.valueAsDate= new Date());
+    </script>
+  </body>
+</html>

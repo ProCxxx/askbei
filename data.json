@@ -1,0 +1,80 @@
+{
+  "drivers": [
+    {
+      "address": "2",
+      "btipn": "",
+      "email": "",
+      "id": "1536613770801",
+      "ldoti": "2018-09-10",
+      "ldoti2": "2018-09-10",
+      "licenceexpdate": "",
+      "licencenumber": "",
+      "makeyear": "",
+      "makeyear2": "",
+      "medicalcardexpdate": "",
+      "model": "",
+      "model2": "",
+      "name": "1",
+      "phonenumber": "3",
+      "ssn": "",
+      "unitnumber": "",
+      "unitnumber2": "",
+      "vin": "",
+      "vin2": "",
+      "yeartodate": ""
+    }
+  ],
+  "customers": [
+    {
+      "billingadress": "BA 1",
+      "email": "E@1.com",
+      "faxnumber": "FN 1",
+      "id": "13238698922432352",
+      "mcnumber": "MCN 1",
+      "name": "Customer 1",
+      "yeartodateinfo": "YTD 1"
+    },
+    {
+      "billingadress": "BA 2",
+      "email": "E@2.com",
+      "faxnumber": "FN 2",
+      "id": "102186596111402160",
+      "mcnumber": "MCN 2",
+      "name": "Customer 2",
+      "yeartodateinfo": "YTD 2"
+    },
+    {
+      "billingadress": "BA 3",
+      "email": "E@3.com",
+      "faxnumber": "FN 3",
+      "id": "42252903293550690",
+      "mcnumber": "MCN 3",
+      "name": "Customer 3",
+      "yeartodateinfo": "YTD 3"
+    },
+    {
+      "billingadress": "BA 4",
+      "email": "E@4.com",
+      "faxnumber": "FN 4",
+      "id": "70056325519235944",
+      "mcnumber": "MCN 4",
+      "name": "Customer 4",
+      "yeartodateinfo": "YTD 4"
+    }
+  ],
+  "load": [
+    {
+      "BOL": "/root/Documents/Projects/Electron/askbei/drivers.html",
+      "customer": "13238698922432352",
+      "deliverydate": "2018-09-09",
+      "deliverylocation": "DC",
+      "deliveryrate": "2",
+      "drivers": "",
+      "grossrate": "1",
+      "id": "70363705571675544",
+      "loadName": "Load 1",
+      "pickupdate": "2018-09-09",
+      "pickuplocation": "NY"
+    }
+  ]
+}

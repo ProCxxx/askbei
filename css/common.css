@@ -1,0 +1,25 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+div.nav {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #000;
+}
+div.nav h1.title {
+  flex: 1;
+  text-align: center;
+  padding: 6.5px;
+}
+div.nav a.item {
+  padding: 11px;
+  font-size: 24px;
+  color: #000;
+  text-decoration: none;
+}
+div.nav a.item:hover {
+  color: #333;
+  cursor: pointer;
+}
