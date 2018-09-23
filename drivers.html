@@ -37,7 +37,7 @@
     </div>
     <form class="main">
         <input type="button" value="Add new driver" id="newDriver"/>
-         <select>
+        <select>
             <!-- <option value="1">Driver 1</option> -->
         </select>
         <br/>
@@ -60,124 +60,144 @@
             <input type="date" id="ldoti">
             <input type="text" placeholder="Bobtail Insurance Policy Number" id="btipn">
         </div>
-        <label class='labela' for="trailer">+ Trailer Unit Information</label>
-        <div class="more" id='trailer'>
-            <input type="text" placeholder="Unit number" id="unitnumber2">
-            <input type="text" placeholder="VIN" id="vin2">
-            <input type="text" placeholder="Make Year" id="makeyear2">
-            <input type="text" placeholder="Model" id="model2">
-            <label for="ldoti2">Date of Last DOT inspection</label>
-            <input type="date" id="ldoti2">
+            <label class='labela' for="trailer">+ Trailer Unit Information</label>
+            <div class="more" id='trailer'>
+                <input type="text" placeholder="Unit number" id="unitnumber2">
+                <input type="text" placeholder="VIN" id="vin2">
+                <input type="text" placeholder="Make Year" id="makeyear2">
+                <input type="text" placeholder="Model" id="model2">
+                <label for="ldoti2">Date of Last DOT inspection</label>
+                <input type="date" id="ldoti2">
         </div>
-        <input type="submit" value="Save">
+                <input type="submit" value="Save">
     </form>
-    <script>
-        const {ipcRenderer} = require('electron');
-        var els = document.querySelectorAll("form input:not([type=submit]):not([type=button])");
-        var drivers;
-        var n=0;
-        ipcRenderer.on('drivers:fetch',(e,arg)=>{
-            drivers = arg;
-            var s  = document.querySelector('form select')
-            for(var i =0; i< drivers.length;i++){
-                var o = document.createElement('option');
-                o.setAttribute('value',drivers[i].id);
-                o.innerText=drivers[i].name;
-                s.appendChild(o);
-            }
-            var fd = document.querySelector('form select:first-child').value;
-            for(var i = 0; i< drivers.length;i++){
-                if(drivers[i]==fd){
-                    els.forEach(item=>{
-                        if(item.getAttribute('type')!=='date' && !item.childElementCount){
-                            item.value = drivers[i][item.id]
-                        }else if(item.getAttribute('type')==='date'){
-                            item.value= drivers[i][item.id]
+                <script>
+                    const {
+                        ipcRenderer
+                    } = require('electron');
+                    var els = document.querySelectorAll("form input:not([type=submit]):not([type=button])");
+                    var drivers;
+                    var n = 0;
+                    ipcRenderer.on('drivers:fetch', (e, arg) => {
+                        drivers = arg;
+                        var s = document.querySelector('form select')
+                        for (var i = 0; i < drivers.length; i++) {
+                            var o = document.createElement('option');
+                            o.setAttribute('value', drivers[i].id);
+                            o.innerText = drivers[i].name;
+                            s.appendChild(o);
                         }
-                })
-                }
-            }
-        });
-        ipcRenderer.on('drivers:back',(e)=>{
-            var a = document.createElement('a');
-            a.href="./index.html";
-            console.log(a)
-            a.click();
-        })
-        ipcRenderer.send('drivers:fetch');
 
-        document.querySelector('form input[type=button]').addEventListener('click',addNewDriver);
-        document.querySelector('form select').addEventListener('change',changeDriver);
-        document.querySelectorAll("input[type=date]").forEach(item=>item.valueAsDate= new Date());
-        document.querySelector('form').addEventListener('submit',handleSubmit);
-        function handleSubmit(e){
-            e.preventDefault();
-            var vals={};
-            var r = undefined;
-            els.forEach((item)=>{
-                if(item.value == ''&& r===undefined){
-                    r = confirm("Some fields are empty\nSave anyway?");
-                    
-                }
-                vals[item.id] = item.value
-            });
-            if(r || r===undefined){
-                if(state){
-                    console.log('new');
-                    console.log(vals)
-                    vals.id= Date.now()+'';
-                    ipcRenderer.send('drivers:new',vals);
-                }else{
-                    console.log('edit')
-                    console.log(vals)
-                    ipcRenderer.send('drivers:edit',vals);                    
-                }
-            }
-        }
-        document.querySelectorAll('.labela').forEach(item=>item.addEventListener('click',toggleMore));
-        function toggleMore(e){
-            document.querySelector('#'+e.target.getAttribute('for')).classList.toggle('show');
-        }
-        var state = false;
-        function addNewDriver(e){
-            state=true;
-            if(n!==0) return;
-            n = 1;
-            var o = document.createElement('option');
-            o.setAttribute('value','0');
-            o.setAttribute('selected',true);
-            o.innerText="New Driver";
-            document.querySelector("form select").insertBefore(o,document.querySelector('form select option:first-child'));
-            els.forEach(item=>{
-                if(item.getAttribute('type')!=='date' && !item.childElementCount){
-                    item.value = ''
-                }else if(item.getAttribute('type')==='date'){
-                    item.valueAsDate= new Date()
-                }
-            })
-        }
-        function changeDriver(e){
-            var id = e.target.value;
-            var cd=null;
-            for(var i =0;i<drivers.length;i++){
-                if(id===drivers[i].id){
-                    cd=drivers[i];
-                }
-            }
-            if(cd!==null){
-                state = false;
-                elem.forEach(item=>{
-                    if(item.getAttribute('type')!=='date'){
-                        item.value = cd[item.getAttribute('id')];
-                    }else{
-                        item.valueAsDate = cd[item.getAttribute('id')];
+                        // var fd = document.querySelector('form select').value;
+                        // for (var i = 0; i < drivers.length; i++) {
+                        //     if (drivers[i] == fd) {
+                        //         els.forEach(item => {
+                        //             if (item.getAttribute('type') !== 'date' && !item.childElementCount) {
+                        //                 item.value = drivers[i][item.id]
+                        //             } else if (item.getAttribute('type') === 'date') {
+                        //                 item.value = drivers[i][item.id]
+                        //             }
+                        //         })
+                        //     }
+                        // }
+                        if (drivers.length) {
+                            changeDriver({
+                                target: {
+                                    value: drivers[0].id
+                                }
+                            })
+                        }
+                    });
+                    ipcRenderer.on('drivers:back', (e) => {
+                        var a = document.createElement('a');
+                        a.href = "./index.html";
+                        a.click();
+                    })
+                    ipcRenderer.send('drivers:fetch');
+
+                    document.querySelector('form input[type=button]').addEventListener('click', addNewDriver);
+                    document.querySelector('form select').addEventListener('change', changeDriver);
+                    document.querySelectorAll("input[type=date]").forEach(item => item.valueAsDate = new Date());
+                    document.querySelector('form').addEventListener('submit', handleSubmit);
+
+                    function handleSubmit(e) {
+                        e.preventDefault();
+                        var vals = {};
+                        var r = undefined;
+                        els.forEach((item) => {
+                            if (item.value == '' && r === undefined) {
+                                r = confirm("Some fields are empty\nSave anyway?");
+
+                            }
+                            vals[item.id] = item.value
+                        });
+                        if (r || r === undefined) {
+                            if (state) {
+                                // console.log('new');
+                                // console.log(vals)
+                                vals.id = Date.now() + '';
+                                ipcRenderer.send('drivers:new', vals);
+                            } else {
+                                console.log('edit')
+                                vals["id"] = document.querySelector("form select").value;
+                                console.log(vals)
+                                ipcRenderer.send('drivers:edit', vals);
+                            }
+                        }
                     }
-                })
-            }else{
-                alert('Driver not found in database\nPlase try again');
-            }
-        }
-    </script>
+                    document.querySelectorAll('.labela').forEach(item => item.addEventListener('click', toggleMore));
+
+                    function toggleMore(e) {
+                        document.querySelector('#' + e.target.getAttribute('for')).classList.toggle('show');
+                    }
+                    var state = false;
+
+                    function addNewDriver(e) {
+                        state = true;
+                        if (n === 0) {
+                            n = 1;
+                            var o = document.createElement('option');
+                            o.setAttribute('value', '0');
+                            o.setAttribute('selected', true);
+                            o.innerText = "New Driver";
+                            document.querySelector("form select").insertBefore(o, document.querySelector('form select option:first-child'));
+                        }
+                        document.querySelector("form select").value = 0;
+                        els.forEach(item => {
+                            if (item.getAttribute('type') !== 'date' && !item.childElementCount) {
+                                item.value = ''
+                            } else if (item.getAttribute('type') === 'date') {
+                                item.valueAsDate = new Date()
+                            }
+                        })
+                    }
+
+                    function changeDriver(e) {
+                        var id = e.target.value;
+                        var cd = null;
+                        for (var i = 0; i < drivers.length; i++) {
+                            if (id === drivers[i].id) {
+                                cd = drivers[i];
+                            }
+                        }
+                        if (cd !== null) {
+                            state = false;
+                            els.forEach(item => {
+                                if (item.getAttribute('type') !== 'date') {
+                                    item.value = cd[item.getAttribute('id')];
+                                } else {
+                                    item.value = cd[item.getAttribute('id')];
+                                }
+                            })
+                        } else {
+                            if (id == 0) {
+                                addNewDriver();
+                            } else {
+                                alert('Driver not found in database\nPlase try again');
+                            }
+                        }
+                    }
+                </script>
 </body>
 
 </html>
