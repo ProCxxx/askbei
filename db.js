@@ -2,21 +2,21 @@ const fs = require("fs");
 const url = require("url");
 const path = require("path");
 
-var data;
+// var data;
 
 function readFile() {
-  return new Promise((g, b) => {
+  return new Promise((g) => {
     fs.readFile(
       new url.URL(path.join("file://", __dirname, "data.json")),
-      (err, out, outerr) => {
+      (err, out) => {
         if (err) throw err;
-        g((data = JSON.parse(out.toString())));
+        g((JSON.parse(out.toString())));
       }
     );
   });
 }
-function save(newdata) {
-  data = newdata;
+function save(data) {
+  // data = newdata;
   fs.writeFile(
     new url.URL(path.join("file://", __dirname, "data.json")),
     JSON.stringify(data),

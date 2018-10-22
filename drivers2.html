@@ -28,11 +28,8 @@
     </div>
     <form class="main">
         <select>
-            <option value="1">Driver 1</option>
-            <option value="2">Driver 2</option>
-            <option value="3">Driver 3</option>
-            <option value="4">Driver 4</option>
-            <option value="5">Driver 2</option>
+            <!--<option value="1">Driver 1</option>-->
+            <!--<option value="1">Driver 1</option>-->
         </select>
         <br/>
         <input type="button" value="Load List for the Week" id='llforweek'/>
@@ -42,6 +39,20 @@
         <input type="submit" value="Save">
     </form>
     <script>
+        const {ipcRenderer} = require('electron');
+        var data;
+        window.addEventListener('load',()=> {
+          ipcRenderer.on('data:fetched', (event, arg) => {
+            data = arg;
+            for(let _ of data.drivers){
+              var o = document.createElement('option');
+              o.innerText = _.name;
+              o.value = _.id;
+              document.querySelector('select').appendChild(o);
+            }
+          })
+          ipcRenderer.send("data:fetch")
+        })
     </script>
 </body>
 

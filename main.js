@@ -1,7 +1,7 @@
 const electron = require("electron");
 const url = require("url");
 const path = require("path");
-
+const fs = require("fs");
 const db = require("./db.js");
 
 const { app, BrowserWindow, Menu, ipcMain } = electron;
@@ -66,11 +66,46 @@ ipcMain.on("data:fetch", (event, arg) => {
   db.read().then(data => event.sender.send("data:fetched", data));
 });
 ipcMain.on("load:new", (e, arg) => {
+  let file = arg.BOL;
+  let id = arg.id;
+  fs.createReadStream(file).pipe(
+    fs.createWriteStream(
+      path.join(__dirname, `data/${id}.${file.split(".").pop()}`)
+    )
+  );
+  arg.BOL = path.join(__dirname, "data", `${id}.${file.split(".").pop()}`);
   db.read().then(item => {
     item.load.push(arg);
     db.write(item);
+    e.sender.send("load:back");
   });
 });
+
+ipcMain.on("load:edit", (e, arg) => {
+  db.read().then(data=>{
+    let index = -1;
+    let load=[];
+    data.load.forEach((item,i)=>{
+      if(item.id === arg.load.id){
+        load.push(arg.load);
+      }else{
+        load.push(item);
+      }
+    });
+    data.load = load;
+    db.write(data);
+    e.sender.send("load:back");
+  })
+});
+ipcMain.on("load:delete", (e, arg) => {
+  db.read().then(data=>{
+    let load = data.load.filter(item=>item.id!==arg.id);
+    data.load = load;
+    db.write(data);
+    e.sender.send("load:back");
+  })
+});
+
 ipcMain.on("customers:length", (e, arg) => {
   db.read().then(item => {
     e.sender.send("customers:length", item.customers.length);
@@ -112,9 +147,11 @@ ipcMain.on("customers:edit", (e, arg) => {
 });
 
 ipcMain.on("drivers:fetch", (e, arg) => {
-  db.read().then(data => {
-    e.sender.send("drivers:fetch",data.drivers);
-  }).catch((x=>console.log(x)));
+  db.read()
+    .then(data => {
+      e.sender.send("drivers:fetch", data.drivers);
+    })
+    .catch(x => console.log(x));
 });
 
 ipcMain.on("drivers:edit", (e, arg) => {

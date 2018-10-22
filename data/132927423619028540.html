@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Askbei Dispatch - Customers</title>
+    <link rel="stylesheet" href="./css/customers.css">
+    <link rel="stylesheet" href="./css/common.css">
+
+    <style>
+        .main{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .main *{
+            width: 400px;
+            padding: 10px;
+        }
+        .more{
+            display: none;
+        }
+        .more.show{
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="nav">
+        <a href=./index.html class="item">Back</a>
+        <h1 class="title">Customers</h1>
+    </div>
+    <form class="main">
+        <label for="add">Add customers</label>
+        <div class="more show" id="add">
+            <input type="text" placeholder="Name" id="name"/>
+            <input type="text" placeholder="MC Number" id="mcnumber"/>
+            <input type="text" placeholder="Billing Adress" id="billingadress"/>
+            <input type="text" placeholder="Fax number" id="faxnumber"/>
+            <input type="email" placeholder="E-mail" id="email"/>
+            <input type="text" placeholder="Year to Date Information" id="yeartodateinfo"/>
+            <input type="submit" value="Add customer" id='addBtn'>
+        </div>
+        <label for="edit">Edit customer</label>
+        <div class="more" id="edit">
+            <select  class="cuss" id="kurac">
+                <!-- <option value="1"> palac</option> -->
+            </select>
+            <input type="text" id="id" disabled>
+            <input type="text" placeholder="Name" id="name"/>
+            <input type="text" placeholder="MC Number" id="mcnumber"/>
+            <input type="text" placeholder="Billing Adress" id="billingadress"/>
+            <input type="text" placeholder="Fax number" id="faxnumber"/>
+            <input type="email" placeholder="E-mail" id="email"/>
+            <input type="text" placeholder="Year to Date Information" id="yeartodateinfo"/>
+            <input type="submit" value="Edit customer" id='editBtn'>
+        </div>
+        <label for="remove">Remove customer</label>
+        <div class="more" id="remove">
+            <select class="cuss" id="palac">
+            <!-- <option value="1"> palac</option> -->
+        </select>
+        <input type="submit" value="Remove customer" id="removeBtn"/>
+        </div>
+    </form>
+    <script>
+        var cLen ;
+        var cust;
+        var {ipcRenderer} = require('electron');
+        window.addEventListener('load',()=>{
+            ipcRenderer.on("customers:length",(e,l)=>{
+                cLen=l;
+            })
+            ipcRenderer.on('customers:list',(e,arg)=>{
+                cust = arg;
+                var s = document.getElementsByClassName('cuss');
+                for(var i =0; i<s.length;i++){
+                    for(var j =0;j<arg.length;j++){
+                        var o = document.createElement('option');
+                        o.setAttribute('value',arg[j].id);
+                        o.innerText=arg[j].name;
+                        s[i].appendChild(o);
+                    }
+                }
+                document.querySelector('#kurac').addEventListener('change',handleEditChange);
+                if(cust.length!==0){
+                    var se = document.querySelectorAll("#edit input:not(#editBtn)");
+                    se.forEach(item => item.value = cust[0][item.id]);
+                }
+            })
+            ipcRenderer.on('customers:back', (e) => {
+                var a = document.createElement('a');
+                a.href = "index.html";
+                a.click();
+            })
+            ipcRenderer.send('customers:length');
+            ipcRenderer.send('customers:list');
+
+            var b = document.querySelectorAll('input[type=submit]');
+            for(var i =0; i<b.length;i++ ){
+                b[i].addEventListener('click',handleBtnClick);
+            }
+        });
+        document.querySelectorAll('label').forEach(item=>{item.addEventListener('click',toggleMore)});
+        function toggleMore(e){
+            document.querySelector('#'+e.target.getAttribute('for')).classList.toggle('show');
+        }
+        document.querySelector('form.main').addEventListener('submit',handleSubmit);
+        function handleSubmit(e){
+            e.preventDefault();
+        }
+        function handleBtnClick(e){
+            var t = e.target.id;
+            if(t ==="removeBtn"){
+                var val = document.querySelector("#palac").value;
+                var cn;
+                for(var i = 0; i<cust.length;i++){
+                    if(cust[i].id===val){
+                        cn=cust[i].name;
+                        break;
+                    }
+                }
+                var c = confirm("Are you sure you want to delete user: "+ cn);
+                if(c){
+                    ipcRenderer.send("customers:delete",val);
+                }
+            }else if(t==="addBtn"){
+                var el = document.querySelectorAll("#add input:not(#addBtn)")
+                var names=[];
+                var data=[];
+                el.forEach(item=>{names.push(item.id);data.push(item.value)});
+                var ret = {}
+                for(var i =0;i<names.length;i++){
+                    ret[names[i]]=data[i];
+                }
+                var x= data.filter(item=>item!=='');
+
+                if(x.length!==data.length){
+                    var temp;
+                    if(!confirm("Some fields are empty, add anyway?")){
+                        return;
+                    }
+                }
+                ret['id']=Math.round(Math.random()*86400)*Date.now()+'';
+               
+                ipcRenderer.send("customers:new",ret);
+            } else if (t === "editBtn") {
+                var el = document.querySelectorAll("#edit input:not(#editBtn)")
+                var names = [];
+                var data = [];
+                el.forEach(item => { names.push(item.id); data.push(item.value) });
+                var ret = {}
+                for (var i = 0; i < names.length; i++) {
+                    ret[names[i]] = data[i];
+                }
+                
+                ipcRenderer.send("customers:edit",ret);
+            }
+        }
+        function handleEditChange(e){
+            var id = document.querySelector("#kurac").value/1;
+            var d=null;
+            for(var i =0; i< cust.length;i++){
+                if(cust[i].id/1===id){
+                    d=cust[i];
+                    break;
+                }
+            }
+            if(d!==null){
+                 var se = document.querySelectorAll("#edit input:not(#editBtn)");
+                se.forEach(item => item.value = d[item.id]);
+            }else{
+                alert("User not found");
+            }
+        }
+    </script>
+</body>
+
+</html>

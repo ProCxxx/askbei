@@ -4,9 +4,12 @@
   box-sizing: border-box;
 }
 div.nav {
+  top: 0;
+  position: sticky;
   display: flex;
   align-items: center;
   border-bottom: 1px solid #000;
+  background-color: #fff;
 }
 div.nav h1.title {
   flex: 1;

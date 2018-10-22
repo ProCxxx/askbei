@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Askbei Dispatch - New Load</title>
+    <link rel="stylesheet" href="./css/newload.css">
+    <link rel="stylesheet" href="./css/common.css">
+
+    <style>
+        .main{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .main *{
+            width: 400px;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="nav">
+        <a href="index.html" class="item">Back</a>
+        <h1 class="title">New Load</h1>
+    </div>
+        <form class="main">
+            <label for="loadName">Load name: </label>
+            <input type="text" id="loadName" placeholder="Load name" autofocus/>
+            <label for="customer">Customer:</label>
+            <select id='customer'>
+                <!-- <option value=1>Customer 1</option> -->
+            </select>
+            <label for="pickupdate">Pick up date: </label>
+            <input type="date" id="pickupdate"/>
+            <input type="text" placeholder="Pick up location" id="pickuplocation">
+            <label for="deliverydate">Delivery date: </label>
+            <input type="date" id='deliverydate'/>
+            <input type="text" placeholder="Delivery location" id="deliverylocation"/>
+            <input type="text" placeholder="Gross Rate" id="grossrate"/> 
+            <input type="text" placeholder="Deliver Rate" id="deliveryrate"/> 
+            <input type="file" placeholder="Upload BOL when completed" id='BOL' value=""/>
+            <label for="drivers">Assign to driver: </label>
+            <select id='drivers'>
+                <!-- <option value=1>Driver 1</option> -->
+            </select>
+            <input type="submit" value="Submit">
+        </form>
+    <script>
+        const {ipcRenderer} = require('electron');
+        var data;
+        window.addEventListener('load',()=>{
+            ipcRenderer.on('data:fetched', (event, arg) => {
+                data = arg;
+                for(var i =0; i< data.customers.length;i++){
+                    var option = document.createElement('option');
+                    option.setAttribute('value',data.customers[i].id);
+                    option.innerText = data.customers[i].name;
+                    document.querySelector("select#customer").appendChild(option);
+                }
+                for(var i =0; i< data.drivers.length;i++){
+                    var option = document.createElement('option');
+                    option.setAttribute('value',data.drivers[i].id);
+                    option.innerText = data.drivers[i].name;
+                    document.querySelector("select#drivers").appendChild(option);
+                }
+            })
+            ipcRenderer.send('data:fetch');
+        })
+        document.querySelectorAll("input[type=date]").forEach(item=>item.valueAsDate= new Date());
+        document.querySelector('form').addEventListener('submit',handleSubmit);
+        
+        function handleSubmit(e){
+            e.preventDefault();
+            
+            var els = document.querySelectorAll("form *:not(label):not(option)");
+            console.log(els)
+            var vals={};
+            var names = ["loadName","customer","pickupdate","pickuplocation","deliverydate","deliverylocation","grossrate","deliveryrate","BOL","drivers","id"].reverse();
+            
+            els.forEach((item)=>{vals[names.pop()]=item.value});
+            try{
+                vals['BOL']=document.querySelector('#BOL').files[0].path;
+            }catch(err){
+                vals['BOL']='';
+            }
+            vals['id']=Date.now()*Math.round(Math.random()*86400)+'';
+            var x = false;
+            els.forEach(item=>{
+                if(item.value==='' && !x){
+                    if(!confirm("Some fields are empty.\nSubmit anyway?")){
+                        x=true;
+                    }
+                }
+            })
+            if(x) return;
+            ipcRenderer.send("load:new",vals);
+            
+            console.log(vals);
+            
+            var a = document.createElement('a');
+            a.href = "./index.html";
+            a.click();
+        }
+    </script>
+</body>
+</html>
